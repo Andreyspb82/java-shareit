@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -74,8 +74,8 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User getUserId(int userId) {
         if (!users.containsKey(userId)) {
-            log.warn("Пользователя с таким Id нет");
-            throw new NotFoundException("Пользователя с таким Id нет");
+            log.warn("Пользователя с Id = " + userId + " нет");
+            throw new NotFoundException("Пользователя с Id = " + userId + " нет");
         }
         return users.get(userId);
     }
@@ -89,8 +89,8 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void removeUserId(int userId) {
         if (!users.containsKey(userId)) {
-            log.warn("Пользователя с таким Id нет");
-            throw new NotFoundException("Пользователя с таким Id нет");
+            log.warn("Пользователя с Id = " + userId + " нет");
+            throw new NotFoundException("Пользователя с Id = " + userId + " нет");
         }
         users.remove(userId);
     }

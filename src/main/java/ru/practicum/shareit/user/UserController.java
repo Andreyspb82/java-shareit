@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PatchMapping ("/{userId}")
-    public User updateUser(@Valid @RequestBody User user, @PathVariable int userId) {
+    public User updateUser(@RequestBody User user, @PathVariable int userId) {
        return userService.updateUser(user, userId);
     }
 

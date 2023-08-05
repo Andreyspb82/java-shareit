@@ -1,9 +1,16 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+
 /**
  * TODO Sprint add-controllers.
  */
-public class Item {
+@Data
+@AllArgsConstructor
+public class Item  {
 
     private Integer id;
 
@@ -11,11 +18,15 @@ public class Item {
 
     private String description;
 
-    private boolean available;
+    @NotNull
+    private Boolean available;
 
     private Integer owner;
 
     //private request;
 
 
+
+    public Item() {
+    }
 }

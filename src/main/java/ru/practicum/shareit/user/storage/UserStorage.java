@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.storage;
 
 import ru.practicum.shareit.user.model.User;
 
@@ -15,6 +15,8 @@ public interface UserStorage {
     List<User> getUsers();
 
     void removeUserId(int userId);
+
+
 
 
 }
