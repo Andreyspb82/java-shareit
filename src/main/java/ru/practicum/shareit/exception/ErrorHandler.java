@@ -23,7 +23,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({
-            //  DataAccessException.class,
             NotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)

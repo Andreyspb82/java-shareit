@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * TODO Sprint add-controllers.
  */
-//@Validated
+
 @RestController
 @RequestMapping("/items")
 @AllArgsConstructor
@@ -43,8 +43,8 @@ public class ItemController {
         return itemService.getItemsDtoUserId(userId);
     }
 
-    @GetMapping ("/search")
-    public List<ItemDto> getItemsBySearch (@RequestParam String text) {
+    @GetMapping("/search")
+    public List<ItemDto> getItemsBySearch(@RequestParam String text) {
         return itemService.getItemsBySearch(text);
     }
 

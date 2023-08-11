@@ -29,8 +29,6 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItemDto(ItemDto itemDto, int itemId, int userId) {
         userStorage.getUserId(userId);
         return itemStorage.updateItemDto(itemDto, itemId, userId);
-
-       // return null;
     }
 
     @Override
@@ -40,7 +38,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
 
-    @Override public List<ItemDto> getItemsDtoUserId(int userId){
+    @Override
+    public List<ItemDto> getItemsDtoUserId(int userId) {
         userStorage.getUserId(userId);
         return itemStorage.getItemsDtoUserId(userId);
     }

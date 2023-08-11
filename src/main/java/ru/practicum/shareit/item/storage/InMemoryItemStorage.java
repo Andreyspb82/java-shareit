@@ -1,19 +1,24 @@
 package ru.practicum.shareit.item.storage;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.storage.ItemRequestStorage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import java.util.*;
 
 @Component
 @Slf4j
 public class InMemoryItemStorage implements ItemStorage {
+
+    @Autowired
+    private ItemRequestStorage itemRequestStorage;
 
     private final Map<Integer, Item> items = new HashMap<>();
 
@@ -33,9 +38,9 @@ public class InMemoryItemStorage implements ItemStorage {
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
-                userId
+                userId,
+                itemDto.getRequest() != null ? itemRequestStorage.getItemRequest(itemDto.getRequest()) : null
         );
-
         items.put(item.getId(), item);
         return toItemDto(item);
     }
@@ -57,6 +62,11 @@ public class InMemoryItemStorage implements ItemStorage {
 
             if (itemDto.getAvailable() != null) {
                 oldItem.setAvailable(itemDto.getAvailable());
+            }
+
+            Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(oldItem);
+            if (!violations.isEmpty()) {
+                throw new ValidationException("Данные вещи не прошли валидацию");
             }
 
             items.put(itemId, oldItem);
@@ -82,9 +92,9 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public List<ItemDto> getItemsDtoUserId(int userId) {
-        List <ItemDto> itemsDto = new ArrayList<>();
-        List <Item> items1 = new ArrayList<>(items.values());
-        for (Item item: items1) {
+        List<ItemDto> itemsDto = new ArrayList<>();
+        List<Item> items1 = new ArrayList<>(items.values());
+        for (Item item : items1) {
             if (item.getOwner() == userId) {
                 itemsDto.add(toItemDto(item));
             }
@@ -95,16 +105,16 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public List<ItemDto> getItemsBySearch(String text) {
         System.out.println("Печать запроса " + text);
-        List <ItemDto> itemsDto = new ArrayList<>();
-        List <Item> items1 = new ArrayList<>(items.values());
+        List<ItemDto> itemsDto = new ArrayList<>();
+        List<Item> items1 = new ArrayList<>(items.values());
 
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
 
-        for (Item item: items1) {
+        for (Item item : items1) {
             if ((item.getName().toLowerCase().contains(text.toLowerCase()) ||
-                    item.getDescription().toLowerCase().contains(text.toLowerCase()))&&
+                    item.getDescription().toLowerCase().contains(text.toLowerCase())) &&
                     item.getAvailable()) {
                 itemsDto.add(toItemDto(item));
             }
@@ -117,7 +127,9 @@ public class InMemoryItemStorage implements ItemStorage {
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getAvailable()
+                item.getAvailable(),
+                item.getRequest() != null ? item.getRequest().getId() : null
+
         );
     }
 

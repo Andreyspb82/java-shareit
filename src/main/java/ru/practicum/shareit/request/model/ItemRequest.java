@@ -1,32 +1,28 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.request.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
+import java.time.LocalDateTime;
 
 /**
- * TODO Sprint add-controllers.
+ * TODO Sprint add-item-requests.
  */
 @Data
 @AllArgsConstructor
-public class ItemDto {
-
+public class ItemRequest {
     @Positive
     private Integer id;
 
     @NotBlank
-    private String name;
-
-    @NotBlank
     private String description;
 
-    @NotNull
-    private Boolean available;
-
     @Positive
-    private Integer request;
+    private Integer requestor;
 
+    @PastOrPresent
+    private LocalDateTime created;
 }
