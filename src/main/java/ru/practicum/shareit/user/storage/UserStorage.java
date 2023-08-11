@@ -11,13 +11,9 @@ public interface UserStorage {
 
     User updateUser(UserDto userDto, int userId);
 
-    User getUserId (int userId);
+    User getUserId(int userId);
 
     List<User> getUsers();
 
     void removeUserId(int userId);
-
-
-
-
 }
