@@ -13,8 +13,10 @@ import ru.practicum.shareit.user.storage.UserStorage;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,38 +29,31 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRequestStorage itemRequestStorage;
 
-    private int itemId = 1;
-
-    private int getNextId() {
-        return itemId++;
-    }
-
     @Override
     public ItemDto createItem(ItemDto itemDto, int userId) {
         userStorage.getUserById(userId);
 
-        itemDto.setId(getNextId());
-        Item item = new Item(
-                itemDto.getId(),
-                itemDto.getName(),
-                itemDto.getDescription(),
-                itemDto.getAvailable(),
-                userId,
-                itemDto.getRequest() != null ? itemRequestStorage.getItemRequest(itemDto.getRequest()) : null
-        );
+        itemDto.setId(itemStorage.getNextId());
 
-        return itemStorage.putItem(item);
-
+        Item item = Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .owner(userStorage.getUserById(userId))
+                .request(itemDto.getRequest() != null ? itemRequestStorage.getItemRequest(itemDto.getRequest().getId()) : null)
+                .build();
+        return toItemDto(itemStorage.putItem(item));
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto, int itemId, int userId) {
+    public ItemDto updateItem(ItemDto itemDto, int userId) {
         userStorage.getUserById(userId);
 
-        Item oldItem = itemStorage.getItemById(itemId);
+        Item oldItem = itemStorage.getItemById(itemDto.getId());
 
-        if (oldItem.getOwner() != userId) {
-            throw new NotFoundException("Неверно указан владелец вещи");
+        if (oldItem.getOwner().getId() != userId) {
+            throw new NotFoundException("Invalid item owner");
         }
 
         if (itemDto.getName() != null) {
@@ -75,29 +70,57 @@ public class ItemServiceImpl implements ItemService {
 
         Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(oldItem);
         if (!violations.isEmpty()) {
-            throw new ValidationException("Данные вещи не прошли валидацию");
+            throw new ValidationException("Item has not been validated");
         }
 
-        return itemStorage.updateItem(oldItem);
+        return toItemDto(itemStorage.updateItem(oldItem));
     }
 
     @Override
-    public ItemDto getItemDtoById(int itemId, int userId) {
+    public ItemDto getItemById(int itemId, int userId) {
         userStorage.getUserById(userId);
-        return itemStorage.getItemDtoById(itemId, userId);
+        return toItemDto(itemStorage.getItemById(itemId));
     }
 
 
     @Override
-    public List<ItemDto> getItemsDtoByUserId(int userId) {
+    public List<ItemDto> getItemsByUserId(int userId) {
         userStorage.getUserById(userId);
-        return itemStorage.getItemsDtoByUserId(userId);
+
+        return itemStorage.getItems()
+                .stream()
+                .filter(item -> item.getOwner().getId().equals(userId))
+                .map(this::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemDto> getItemsByQuery(String text) {
-        return itemStorage.getItemsByQuery(text);
+    public List<ItemDto> getItemsByQuery(String query) {
+        List<ItemDto> itemsDto = new ArrayList<>();
+        List<Item> itemsList = itemStorage.getItems();
+
+        if (query.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        for (Item item : itemsList) {
+            if ((item.getName().toLowerCase().contains(query.toLowerCase()) ||
+                    item.getDescription().toLowerCase().contains(query.toLowerCase())) &&
+                    item.getAvailable()) {
+                itemsDto.add(toItemDto(item));
+            }
+        }
+        return itemsDto;
     }
 
+    private ItemDto toItemDto(Item item) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .request(item.getRequest() != null ? item.getRequest() : null)
+                .build();
+    }
 
 }

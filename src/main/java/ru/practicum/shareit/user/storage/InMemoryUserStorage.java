@@ -16,6 +16,12 @@ public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Integer, User> users = new HashMap<>();
 
+    private int userId = 1;
+
+    @Override
+    public int getNextId() {
+        return userId++;
+    }
 
     @Override
     public User putUser(User user) {
@@ -26,15 +32,15 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-
         users.put(user.getId(), user);
+        log.info("Получен запрос PATCH /users, обновлен пользователь");
         return users.get(user.getId());
     }
 
     @Override
     public User getUserById(int userId) {
         if (!users.containsKey(userId)) {
-            throw new NotFoundException("Пользователя с Id = " + userId + " нет");
+            throw new NotFoundException("User with Id = " + userId + " does not exist");
         }
         return users.get(userId);
     }
@@ -48,8 +54,9 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void removeUser(int userId) {
         if (!users.containsKey(userId)) {
-            throw new NotFoundException("Пользователя с Id = " + userId + " нет");
+            throw new NotFoundException("User with Id = " + userId + " does not exist");
         }
+        log.info("Получен запрос DELETE /users, удален пользоваталь");
         users.remove(userId);
     }
 

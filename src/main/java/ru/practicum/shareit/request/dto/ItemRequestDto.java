@@ -1,7 +1,8 @@
 package ru.practicum.shareit.request.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
@@ -9,7 +10,8 @@ import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class ItemRequestDto {
 

@@ -21,23 +21,17 @@ public class UserService {
 
     private final UserStorage userStorage;
 
-    private int userId = 1;
-
-    private int getNextId() {
-        return userId++;
-    }
-
     public User createUser(UserDto userDto) {
         List<User> users = userStorage.getUsers();
 
-        for (User user1 : users) {
-            if (user1.getEmail().equals(userDto.getEmail())) {
-                throw new ConflictException("Пользователь с email = " + userDto.getEmail() + " уже существует");
+        for (User user : users) {
+            if (user.getEmail().equals(userDto.getEmail())) {
+                throw new ConflictException("User with email = " + userDto.getEmail() + " already exists");
             }
         }
 
         User user = new User(
-                getNextId(),
+                userStorage.getNextId(),
                 userDto.getName(),
                 userDto.getEmail()
         );
@@ -50,10 +44,10 @@ public class UserService {
 
         List<User> users = userStorage.getUsers();
 
-        for (User user1 : users) {
-            if (userId != user1.getId()) {
-                if (user1.getEmail().equals(userDto.getEmail())) {
-                    throw new ConflictException("Пользователь с email = " + userDto.getEmail() + " уже существует");
+        for (User user : users) {
+            if (userId != user.getId()) {
+                if (user.getEmail().equals(userDto.getEmail())) {
+                    throw new ConflictException("User with email = " + userDto.getEmail() + " already exists");
                 }
             }
         }
@@ -67,7 +61,7 @@ public class UserService {
 
         Set<ConstraintViolation<User>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(oldUser);
         if (!violations.isEmpty()) {
-            throw new ValidationException("Данные пользователя не прошли валидацию");
+            throw new ValidationException("User data not validated");
         }
         return userStorage.updateUser(oldUser);
     }

@@ -3,10 +3,9 @@ package ru.practicum.shareit.booking.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.practicum.shareit.booking.enums.Status;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 
@@ -16,19 +15,19 @@ public class Booking {
 
     private Integer id;
 
-    @FutureOrPresent
+
     private LocalDateTime start;
 
-    @FutureOrPresent
+
     private LocalDateTime end;
 
-    @Positive
-    private Integer item;
 
-    @Positive
-    private Integer booker;
+    private Item item;
 
-    @NotNull
+
+    private User booker;
+
+
     private Status status;
 
 }

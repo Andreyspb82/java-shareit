@@ -21,7 +21,7 @@ public class ErrorHandler {
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final ValidationException e) {
-        log.info("Error: " + e.getMessage());
+        log.error("Error: " + e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 
@@ -31,14 +31,14 @@ public class ErrorHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final Exception e) {
-        log.info("Error: " + e.getMessage());
+        log.error("Error: " + e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
-        log.info("Internal Server Error");
+        log.error("Internal Server Error", e);
         return new ErrorResponse(
                 "Internal Server Error."
         );
@@ -47,7 +47,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleConflictException(final ConflictException e) {
-        log.info("Error: " + e.getMessage());
+        log.error("Error: " + e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 }

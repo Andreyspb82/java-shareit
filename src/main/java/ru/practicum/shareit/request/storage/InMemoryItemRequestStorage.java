@@ -24,5 +24,4 @@ public class InMemoryItemRequestStorage implements ItemRequestStorage {
         return itemRequestMap.get(itemRequestId);
     }
 
-
 }
