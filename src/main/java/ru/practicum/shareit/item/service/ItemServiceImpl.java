@@ -33,10 +33,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto createItem(ItemDto itemDto, int userId) {
         userStorage.getUserById(userId);
 
-        itemDto.setId(itemStorage.getNextId());
-
         Item item = Item.builder()
-                .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())

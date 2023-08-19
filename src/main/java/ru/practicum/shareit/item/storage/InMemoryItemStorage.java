@@ -18,22 +18,23 @@ public class InMemoryItemStorage implements ItemStorage {
 
     private int itemId = 1;
 
-    @Override
+
     public int getNextId() {
         return itemId++;
     }
 
     @Override
     public Item putItem(Item item) {
+        item.setId(getNextId());
         items.put(item.getId(), item);
-        log.info("Получен запрос POST /items, добавлена вещь");
+        log.info("POST/items request, item added");
         return item;
     }
 
     @Override
     public Item updateItem(Item item) {
         items.put(item.getId(), item);
-        log.info("Получен запрос PATCH /items, обновлена вещь");
+        log.info("PATCH/items request, item updated");
         return item;
     }
 

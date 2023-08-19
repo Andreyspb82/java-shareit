@@ -24,19 +24,18 @@ public class ItemController {
 
     public final ItemService itemService;
 
-    private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
-
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemDto createItem(@Valid @RequestBody ItemDto itemDto,
-                              @RequestHeader(X_SHARER_USER_ID) int userId) {
+                              @RequestHeader(USER_ID_HEADER) int userId) {
         return itemService.createItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestBody ItemDto itemDto,
                               @PathVariable int itemId,
-                              @RequestHeader(X_SHARER_USER_ID) int userId) {
+                              @RequestHeader(USER_ID_HEADER) int userId) {
 
         itemDto.setId(itemId);
         return itemService.updateItem(itemDto, userId);
@@ -44,12 +43,12 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable int itemId,
-                               @RequestHeader(X_SHARER_USER_ID) int userId) {
+                               @RequestHeader(USER_ID_HEADER) int userId) {
         return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByUserId(@RequestHeader(X_SHARER_USER_ID) int userId) {
+    public List<ItemDto> getItemsByUserId(@RequestHeader(USER_ID_HEADER) int userId) {
         return itemService.getItemsByUserId(userId);
     }
 

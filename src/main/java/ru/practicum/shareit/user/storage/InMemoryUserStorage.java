@@ -18,22 +18,22 @@ public class InMemoryUserStorage implements UserStorage {
 
     private int userId = 1;
 
-    @Override
     public int getNextId() {
         return userId++;
     }
 
     @Override
     public User putUser(User user) {
+        user.setId(getNextId());
         users.put(user.getId(), user);
-        log.info("Получен запрос POST /users, добавлен пользователь");
+        log.info("POST/users request, user added");
         return user;
     }
 
     @Override
     public User updateUser(User user) {
         users.put(user.getId(), user);
-        log.info("Получен запрос PATCH /users, обновлен пользователь");
+        log.info("PATCH/users request, user updated");
         return users.get(user.getId());
     }
 
@@ -47,7 +47,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<User> getUsers() {
-        log.info("Получен запрос GET /users, (список ползователей)");
+        log.info("GET/users request, (list of users)");
         return new ArrayList<>(users.values());
     }
 
@@ -56,7 +56,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (!users.containsKey(userId)) {
             throw new NotFoundException("User with Id = " + userId + " does not exist");
         }
-        log.info("Получен запрос DELETE /users, удален пользоваталь");
+        log.info("DELETE/users request, user deleted");
         users.remove(userId);
     }
 

@@ -30,11 +30,10 @@ public class UserService {
             }
         }
 
-        User user = new User(
-                userStorage.getNextId(),
-                userDto.getName(),
-                userDto.getEmail()
-        );
+        User user = User.builder()
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .build();
 
         return userStorage.putUser(user);
     }

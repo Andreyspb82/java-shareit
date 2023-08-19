@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface ItemStorage {
 
-    public int getNextId();
-
     public Item putItem(Item item);
 
     public Item updateItem(Item item);
@@ -15,5 +13,4 @@ public interface ItemStorage {
     public Item getItemById(int itemId);
 
     public List<Item> getItems();
-
 }
