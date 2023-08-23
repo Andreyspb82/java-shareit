@@ -3,16 +3,12 @@ package ru.practicum.shareit.user.service;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ConflictException;
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -22,50 +18,15 @@ public class UserService {
     private final UserStorage userStorage;
 
     public User createUser(UserDto userDto) {
-        List<User> users = userStorage.getUsers();
-
-        for (User user : users) {
-            if (user.getEmail().equals(userDto.getEmail())) {
-                throw new ConflictException("User with email = " + userDto.getEmail() + " already exists");
-            }
-        }
-
-        User user = User.builder()
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .build();
-
-        return userStorage.putUser(user);
+        return userStorage.putUser(UserMapper.mapToNewUser(userDto));
     }
 
-    public User updateUser(UserDto userDto, int userId) {
+    public User updateUser(UserDto userDto, long userId) {
         User oldUser = userStorage.getUserById(userId);
-
-        List<User> users = userStorage.getUsers();
-
-        for (User user : users) {
-            if (userId != user.getId()) {
-                if (user.getEmail().equals(userDto.getEmail())) {
-                    throw new ConflictException("User with email = " + userDto.getEmail() + " already exists");
-                }
-            }
-        }
-
-        if (userDto.getEmail() != null) {
-            oldUser.setEmail(userDto.getEmail());
-        }
-        if (userDto.getName() != null) {
-            oldUser.setName(userDto.getName());
-        }
-
-        Set<ConstraintViolation<User>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(oldUser);
-        if (!violations.isEmpty()) {
-            throw new ValidationException("User data not validated");
-        }
-        return userStorage.updateUser(oldUser);
+        return userStorage.updateUser(UserMapper.mapToUpdateUser(userDto, oldUser));
     }
 
-    public User getUserById(int userId) {
+    public User getUserById(long userId) {
         return userStorage.getUserById(userId);
     }
 
@@ -73,7 +34,7 @@ public class UserService {
         return userStorage.getUsers();
     }
 
-    public void removeUser(int id) {
+    public void removeUser(long id) {
         userStorage.removeUser(id);
     }
 

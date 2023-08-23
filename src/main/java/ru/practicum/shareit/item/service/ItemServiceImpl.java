@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.request.storage.ItemRequestStorage;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import javax.validation.ConstraintViolation;
@@ -27,25 +29,30 @@ public class ItemServiceImpl implements ItemService {
 
     private final UserStorage userStorage;
 
-    private final ItemRequestStorage itemRequestStorage;
+    //private final ItemRequestStorage itemRequestStorage;
 
     @Override
-    public ItemDto createItem(ItemDto itemDto, int userId) {
-        userStorage.getUserById(userId);
+    public ItemDto createItem(ItemDto itemDto, long userId) {
+        User user = userStorage.getUserById(userId);
+        Item item = ItemMapper.mapToItem(itemDto, user);
+        //itemStorage.putItem(item);
+        Item item1 = itemStorage.putItem(item);
+       // return ItemMapper.mapToItemDto(itemStorage.putItem(item));
+        return ItemMapper.mapToItemDto(item1);
 
-        Item item = Item.builder()
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .owner(userStorage.getUserById(userId))
-                .request(itemDto.getRequest() != null ? itemRequestStorage.getItemRequest(itemDto.getRequest().getId()) : null)
-                .build();
-        return toItemDto(itemStorage.putItem(item));
+//        Item item = Item.builder()
+//                .name(itemDto.getName())
+//                .description(itemDto.getDescription())
+//                .available(itemDto.getAvailable())
+//                .owner(userStorage.getUserById(userId))
+//               // .request(itemDto.getRequest() != null ? itemRequestStorage.getItemRequest(itemDto.getRequest().getId()) : null)
+//                .build();
+//        return toItemDto(itemStorage.putItem(item));
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto, int userId) {
-        userStorage.getUserById(userId);
+    public ItemDto updateItem(ItemDto itemDto, long userId) {
+      User user =  userStorage.getUserById(userId);
 
         Item oldItem = itemStorage.getItemById(itemDto.getId());
 
@@ -69,19 +76,23 @@ public class ItemServiceImpl implements ItemService {
         if (!violations.isEmpty()) {
             throw new ValidationException("Item has not been validated");
         }
+        oldItem.setOwner(user);
 
-        return toItemDto(itemStorage.updateItem(oldItem));
+       // Item item = ItemMapper.mapToItem(itemDto, user);
+
+        itemStorage.updateItem(oldItem);
+        return ItemMapper.mapToItemDto(oldItem);
     }
 
     @Override
-    public ItemDto getItemById(int itemId, int userId) {
+    public ItemDto getItemById(long itemId, long userId) {
         userStorage.getUserById(userId);
         return toItemDto(itemStorage.getItemById(itemId));
     }
 
 
     @Override
-    public List<ItemDto> getItemsByUserId(int userId) {
+    public List<ItemDto> getItemsByUserId(long userId) {
         userStorage.getUserById(userId);
 
         return itemStorage.getItems()
@@ -116,7 +127,7 @@ public class ItemServiceImpl implements ItemService {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .request(item.getRequest() != null ? item.getRequest() : null)
+               // .request(item.getRequest() != null ? item.getRequest() : null)
                 .build();
     }
 

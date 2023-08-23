@@ -1,55 +1,81 @@
 package ru.practicum.shareit.item.storage;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.ItemRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import java.util.*;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class InMemoryItemStorage implements ItemStorage {
 
-    private final Map<Integer, Item> items = new HashMap<>();
+    private final ItemRepository itemRepository;
 
-    private int itemId = 1;
-
-
-    public int getNextId() {
-        return itemId++;
-    }
+//    private final Map<Long, Item> items = new HashMap<>();
+//
+//    private long itemId = 1;
+//
+//
+//    public long getNextId() {
+//        return itemId++;
+//    }
 
     @Override
     public Item putItem(Item item) {
-        item.setId(getNextId());
-        items.put(item.getId(), item);
-        log.info("POST/items request, item added");
-        return item;
+        Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(item);
+        if (!violations.isEmpty()) {
+            throw new ValidationException("Item has not been validated");
+        }
+        return itemRepository.save(item);
+
+
+//        item.setId(getNextId());
+//        items.put(item.getId(), item);
+//        log.info("POST/items request, item added");
+//        return item;
     }
 
     @Override
     public Item updateItem(Item item) {
-        items.put(item.getId(), item);
-        log.info("PATCH/items request, item updated");
-        return item;
+        Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(item);
+        if (!violations.isEmpty()) {
+            throw new ValidationException("Item has not been validated");
+        }
+        itemRepository.save(item);
+//        items.put(item.getId(), item);
+//        log.info("PATCH/items request, item updated");
+//        return item;
+        return null;
     }
 
     @Override
-    public Item getItemById(int itemId) {
+    public Item getItemById(long itemId) {
 
-        if (!items.containsKey(itemId)) {
+        Optional<Item> item = itemRepository.findById(itemId);
+        if (item.isEmpty()) {
             throw new NotFoundException("Item with Id = " + itemId + " does not exist");
         }
-        return items.get(itemId);
+
+//        if (!items.containsKey(itemId)) {
+//            throw new NotFoundException("Item with Id = " + itemId + " does not exist");
+//        }
+//        return items.get(itemId);
+        return item.get();
     }
 
     @Override
     public List<Item> getItems() {
-        return new ArrayList<>(items.values());
+
+        //return new ArrayList<>(items.values());
+        return itemRepository.findAll();
     }
 
 }

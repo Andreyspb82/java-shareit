@@ -27,9 +27,19 @@ public class UserController {
 
 
     @PostMapping
-    public User createUser(@Valid @RequestBody UserDto userDto) {
+    public User createUser(@RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
+
+//    @PostMapping
+//    public User createUser(@RequestBody User user) {
+//        return userService.createUser(user);
+//    }
+
+//    @PostMapping
+//    public User createUser(@Valid @RequestBody User user) {
+//        return userService.createUser(user);
+//    }
 
     @PatchMapping("/{userId}")
     public User updateUser(@RequestBody UserDto userDto, @PathVariable int userId) {
@@ -37,7 +47,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@Valid @PathVariable int userId) {
+    public User getUserById(@Valid @PathVariable long userId) {
         return userService.getUserById(userId);
     }
 
@@ -47,7 +57,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void removeUser(@Valid @PathVariable int userId) {
+    public void removeUser(@Valid @PathVariable long userId) {
         userService.removeUser(userId);
     }
 

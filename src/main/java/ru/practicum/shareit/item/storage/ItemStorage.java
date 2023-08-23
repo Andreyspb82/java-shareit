@@ -10,7 +10,7 @@ public interface ItemStorage {
 
     public Item updateItem(Item item);
 
-    public Item getItemById(int itemId);
+    public Item getItemById(long itemId);
 
     public List<Item> getItems();
 }
