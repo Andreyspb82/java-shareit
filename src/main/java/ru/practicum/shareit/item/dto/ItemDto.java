@@ -17,13 +17,13 @@ public class ItemDto {
 
     private Long id;
 
-  //  @NotBlank
+    @NotBlank
     private String name;
 
-  //  @NotBlank
+    @NotBlank
     private String description;
 
-  //  @NotNull
+    @NotNull
     private Boolean available;
 
  //   private ItemRequest request;

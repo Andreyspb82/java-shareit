@@ -49,11 +49,11 @@ public class InMemoryItemStorage implements ItemStorage {
         if (!violations.isEmpty()) {
             throw new ValidationException("Item has not been validated");
         }
-        itemRepository.save(item);
+       return itemRepository.save(item);
 //        items.put(item.getId(), item);
 //        log.info("PATCH/items request, item updated");
 //        return item;
-        return null;
+       // return null;
     }
 
     @Override
