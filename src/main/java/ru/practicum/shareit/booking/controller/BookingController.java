@@ -9,6 +9,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/bookings")
@@ -21,35 +22,37 @@ public class BookingController {
     private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public BookingDtoOut createBooking(@Valid @RequestBody BookingDtoIn bookingDto,
-                                 @RequestHeader(USER_ID_HEADER) long userId) {
-      //  System.out.println("Печать для проверки " + userId);
-        return bookingService.createBooking(bookingDto, userId);
+    public BookingDtoOut createBooking(@Valid @RequestBody BookingDtoIn bookingDtoIn,
+                                       @RequestHeader(USER_ID_HEADER) long userId) {
+        //  System.out.println("Печать для проверки " + userId);
+        return bookingService.createBooking(bookingDtoIn, userId);
     }
 
 
-
     @PatchMapping("/{bookingId}")
-    public BookingDtoOut updateBooking(@RequestParam (name = "approved") @NotNull  Boolean approved,
-                                 @PathVariable long bookingId,
-
-                                 @RequestHeader(USER_ID_HEADER) long userId) {
-//    public Booking updateBooking(@PathVariable long bookingId,
-//                                 @RequestParam(name = "approved") Boolean approved,
-//                                 @RequestHeader(USER_ID_HEADER) long userId) {
-
-        // return null;
-        System.out.println("Печать для статуса контроллер " + approved);
+    public BookingDtoOut updateBooking(@RequestParam(name = "approved") @NotNull Boolean approved,
+                                       @PathVariable long bookingId,
+                                       @RequestHeader(USER_ID_HEADER) long userId) {
         return bookingService.updateBooking(approved, bookingId, userId);
     }
 
 
-
     @GetMapping("/{bookingId}")
     public BookingDtoOut getBookingById(@PathVariable long bookingId,
-                                  @RequestHeader(USER_ID_HEADER) long userId) {
+                                        @RequestHeader(USER_ID_HEADER) long userId) {
         return bookingService.getBookingById(bookingId, userId);
-        // return bookingService.getItemById(itemId, userId);
+    }
+
+    @GetMapping
+    public List<Booking> getAllByBooker (@RequestHeader(USER_ID_HEADER) long bookerId,
+                                         @RequestParam(required = false, defaultValue = "ALL") String state) {
+        return bookingService.getAllByBooker(bookerId, state);
+    }
+
+    @GetMapping("/owner")
+    public List<Booking> getAllByOwner (@RequestHeader(USER_ID_HEADER) long ownerId,
+                                         @RequestParam(required = false, defaultValue = "ALL") String state) {
+        return bookingService.getAllByOwner(ownerId, state);
     }
 
 

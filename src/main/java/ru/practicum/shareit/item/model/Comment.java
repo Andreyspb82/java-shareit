@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
@@ -17,57 +16,49 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "comments")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
-    @Column(name = "name")
-    private String name;
+    @Column(name = "text")
+    private String text;
 
-    @NotBlank
-    @Column(name = "description", nullable = false)
-    private String description;
+ //   @NotNull
+    @ManyToOne
+    //  @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
 
-    @NotNull
-    @Column(name = "is_available")
-    private Boolean available;
-
-    //private ItemRequest request;
-
-    // @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     // @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "author_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     // @ToString.Exclude
-    private User owner;
+    private User author;
 
-    @Transient
-    private List<CommentDto> comments;
+    @Column(name = "created")
+    private LocalDateTime created = LocalDateTime.now();
 
-    public Item() {
+    public Comment() {
     }
 
     @Override
     public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
+        return "Comment{" +
+                "text='" + text + '\'' +
                 '}';
     }
 }

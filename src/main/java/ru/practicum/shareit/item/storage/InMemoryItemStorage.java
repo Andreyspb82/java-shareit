@@ -10,7 +10,9 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Component
 @Slf4j
@@ -49,11 +51,11 @@ public class InMemoryItemStorage implements ItemStorage {
         if (!violations.isEmpty()) {
             throw new ValidationException("Item has not been validated");
         }
-       return itemRepository.save(item);
+        return itemRepository.save(item);
 //        items.put(item.getId(), item);
 //        log.info("PATCH/items request, item updated");
 //        return item;
-       // return null;
+        // return null;
     }
 
     @Override
@@ -73,9 +75,32 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public List<Item> getItems() {
+        return itemRepository.findAllByOrderByIdAsc();
 
-        //return new ArrayList<>(items.values());
-        return itemRepository.findAll();
+
     }
+
+    @Override
+    public List<Item> getItemsTest(long ownerId) {
+
+        return itemRepository.findAllByOwnerIdOrderByIdAsc(ownerId);
+
+    }
+
+//    @Override
+//    public Item getItemsForComment(long itemId, long bookerId) {
+//        Item item8 = itemRepository.findAllItemForComment(itemId, bookerId);
+//        System.out.println("Test888 " + item8);
+//
+//        Optional<Item> item = Optional.ofNullable(itemRepository.findAllItemForComment(itemId, bookerId));
+//
+//
+////        if (item.isEmpty()) {
+////            throw new ValidationException("Test ");
+////        }
+//        System.out.println("Test999 " + item.get());
+//
+//        return item.get();
+//    }
 
 }

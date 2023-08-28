@@ -9,6 +9,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingStorage;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
@@ -17,6 +18,7 @@ import ru.practicum.shareit.user.storage.UserStorage;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
+import java.util.List;
 import java.util.Set;
 
 
@@ -32,9 +34,13 @@ public class BookingServiceImpl implements BookingService {
     private final BookingStorage bookingStorage;
 
     @Override
-    public BookingDtoOut createBooking(BookingDtoIn bookingDtoIn, long userId){
+    public BookingDtoOut createBooking(BookingDtoIn bookingDtoIn, long userId) {
         User user = userStorage.getUserById(userId);
         Item item = itemStorage.getItemById(bookingDtoIn.getItemId());
+
+        if (item.getOwner().getId() == userId) {
+            throw new NotFoundException("Item is booked by the owner");
+        }
 
         if (!item.getAvailable()) {
             throw new ValidationException("Booking not available");
@@ -66,19 +72,21 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDtoOut updateBooking(Boolean approved, long bookingId,  long userId){
-       User userTest = userStorage.getUserById(userId);
+    public BookingDtoOut updateBooking(Boolean approved, long bookingId, long userId) {
+
+        User userTest = userStorage.getUserById(userId);
         Booking booking = bookingStorage.getBookingById(bookingId);
         Item item = booking.getItem();
         User user = item.getOwner();
         System.out.println("Печать для статуса сервис " + approved);
 
         if (!user.equals(userTest)) {
-            throw new ValidationException("Owner not validated");
+            throw new NotFoundException("Invalid owner");
         }
-//        if (userId != user.getId()) {
-//            throw new ValidationException("Owner not validated");
-//        }
+
+        if (approved && booking.getStatus().equals(Status.APPROVED)) {
+            throw new ValidationException("Repeated approval");
+        }
 
         if (approved) {
             booking.setStatus(Status.APPROVED);
@@ -86,20 +94,38 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(Status.REJECTED);
         }
 
-     // return bookingStorage.updateBooking(booking);
+        // return bookingStorage.updateBooking(booking);
 
-       return BookingMapper.mapToBookingDtoOut(bookingStorage.updateBooking(booking));
+        return BookingMapper.mapToBookingDtoOut(bookingStorage.updateBooking(booking));
 
-      //  return null;
+        //  return null;
     }
 
     @Override
-    public BookingDtoOut getBookingById(long bookingId, long userId){
+    public BookingDtoOut getBookingById(long bookingId, long userId) {
         userStorage.getUserById(userId);
+        Booking booking = bookingStorage.getBookingById(bookingId);
+        User booker = booking.getBooker();
+        Item item = booking.getItem();
+        User owner = item.getOwner();
 
+        if (booker.getId() != userId && owner.getId() != userId) {
+            throw new NotFoundException("Invalid userId");
+        }
+        return BookingMapper.mapToBookingDtoOut(booking);
 
+    }
 
-        return BookingMapper.mapToBookingDtoOut(bookingStorage.getBookingById(bookingId));
+    @Override
+    public List<Booking> getAllByBooker(long bookerId, String state) {
+        userStorage.getUserById(bookerId);
+        return bookingStorage.getAllByBooker(bookerId, state);
+    }
+
+    @Override
+    public List<Booking> getAllByOwner(long ownerId, String state) {
+        userStorage.getUserById(ownerId);
+        return bookingStorage.getAllByOwner(ownerId, state);
     }
 
 }
