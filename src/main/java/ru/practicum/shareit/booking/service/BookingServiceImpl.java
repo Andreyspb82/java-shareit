@@ -3,10 +3,10 @@ package ru.practicum.shareit.booking.service;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDtoIn;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.enums.Status;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -93,12 +93,8 @@ public class BookingServiceImpl implements BookingService {
         } else {
             booking.setStatus(Status.REJECTED);
         }
-
-        // return bookingStorage.updateBooking(booking);
-
         return BookingMapper.mapToBookingDtoOut(bookingStorage.updateBooking(booking));
 
-        //  return null;
     }
 
     @Override
@@ -117,15 +113,16 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllByBooker(long bookerId, String state) {
+    public List<BookingDtoOut> getAllByBooker(long bookerId, String state) {
         userStorage.getUserById(bookerId);
-        return bookingStorage.getAllByBooker(bookerId, state);
+        return BookingMapper.mapToBookingsDtoOut(bookingStorage.getAllByBooker(bookerId, state));
     }
 
     @Override
-    public List<Booking> getAllByOwner(long ownerId, String state) {
+    public List<BookingDtoOut> getAllByOwner(long ownerId, String state) {
         userStorage.getUserById(ownerId);
-        return bookingStorage.getAllByOwner(ownerId, state);
+        return BookingMapper.mapToBookingsDtoOut(bookingStorage.getAllByOwner(ownerId, state));
     }
+
 
 }

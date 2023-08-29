@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -36,17 +34,13 @@ public class Comment {
     @Column(name = "text")
     private String text;
 
- //   @NotNull
-    @ManyToOne
-    //  @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    // @ManyToOne
     @JoinColumn(name = "author_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    // @ToString.Exclude
     private User author;
 
     @Column(name = "created")
@@ -55,10 +49,4 @@ public class Comment {
     public Comment() {
     }
 
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "text='" + text + '\'' +
-                '}';
-    }
 }

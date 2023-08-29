@@ -1,11 +1,11 @@
 package ru.practicum.shareit.item.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
@@ -46,14 +46,11 @@ public class Item {
     @Column(name = "is_available")
     private Boolean available;
 
-    //private ItemRequest request;
+    @Transient
+    private ItemRequest request;
 
-    // @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    // @ManyToOne
     @JoinColumn(name = "owner_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    // @ToString.Exclude
     private User owner;
 
     @Transient
@@ -62,12 +59,5 @@ public class Item {
     public Item() {
     }
 
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
+
 }

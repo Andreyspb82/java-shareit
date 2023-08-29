@@ -20,8 +20,6 @@ public class BookingStorageImpl implements BookingStorage {
 
     private final BookingRepository bookingRepository;
 
-    private LocalDateTime nowTime = LocalDateTime.now();
-
     @Override
     public Booking putBooking(Booking booking) {
         return bookingRepository.save(booking);
@@ -32,10 +30,8 @@ public class BookingStorageImpl implements BookingStorage {
         return bookingRepository.save(booking);
     }
 
-
     @Override
     public Booking getBookingById(long bookingId) {
-
         Optional<Booking> booking = bookingRepository.findById(bookingId);
         if (booking.isEmpty()) {
             throw new NotFoundException("Booking with Id = " + bookingId + " does not exist");
@@ -64,15 +60,15 @@ public class BookingStorageImpl implements BookingStorage {
 
     @Override
     public List<Booking> getAllByOwner(long ownerId, String state) {
-        System.out.println("Печать из стораже " + state);
+
         if (state.equals(String.valueOf(State.ALL)) || state.isEmpty()) {
             return bookingRepository.findAllByOwnerId(ownerId);
         } else if (state.equals(String.valueOf(State.FUTURE))) {
-            return bookingRepository.findAllByOwnerIdFuture(ownerId, LocalDateTime.now());
+            return bookingRepository.findAllByOwnerIdFuture(ownerId);
         } else if (state.equals(String.valueOf(State.PAST))) {
-            return bookingRepository.findAllByOwnerIdPast(ownerId, LocalDateTime.now());
+            return bookingRepository.findAllByOwnerIdPast(ownerId);
         } else if (state.equals(String.valueOf(State.CURRENT))) {
-            return bookingRepository.findAllByOwnerIdCurrent(ownerId, LocalDateTime.now());
+            return bookingRepository.findAllByOwnerIdCurrent(ownerId);
         } else if (state.equals(String.valueOf(State.WAITING)) || state.equals(String.valueOf(State.REJECTED))) {
             return bookingRepository.findAllByOwnerIdState(ownerId, state);
         } else {

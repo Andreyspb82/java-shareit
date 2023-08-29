@@ -17,18 +17,9 @@ import java.util.Set;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class InMemoryItemStorage implements ItemStorage {
+public class ItemStorageImpl implements ItemStorage {
 
     private final ItemRepository itemRepository;
-
-//    private final Map<Long, Item> items = new HashMap<>();
-//
-//    private long itemId = 1;
-//
-//
-//    public long getNextId() {
-//        return itemId++;
-//    }
 
     @Override
     public Item putItem(Item item) {
@@ -37,12 +28,6 @@ public class InMemoryItemStorage implements ItemStorage {
             throw new ValidationException("Item has not been validated");
         }
         return itemRepository.save(item);
-
-
-//        item.setId(getNextId());
-//        items.put(item.getId(), item);
-//        log.info("POST/items request, item added");
-//        return item;
     }
 
     @Override
@@ -52,10 +37,6 @@ public class InMemoryItemStorage implements ItemStorage {
             throw new ValidationException("Item has not been validated");
         }
         return itemRepository.save(item);
-//        items.put(item.getId(), item);
-//        log.info("PATCH/items request, item updated");
-//        return item;
-        // return null;
     }
 
     @Override
@@ -65,42 +46,17 @@ public class InMemoryItemStorage implements ItemStorage {
         if (item.isEmpty()) {
             throw new NotFoundException("Item with Id = " + itemId + " does not exist");
         }
-
-//        if (!items.containsKey(itemId)) {
-//            throw new NotFoundException("Item with Id = " + itemId + " does not exist");
-//        }
-//        return items.get(itemId);
         return item.get();
     }
 
     @Override
-    public List<Item> getItems() {
-        return itemRepository.findAllByOrderByIdAsc();
-
-
+    public List<Item> getItems(long ownerId) {
+        return itemRepository.findAllByOwnerIdOrderByIdAsc(ownerId);
     }
 
     @Override
-    public List<Item> getItemsTest(long ownerId) {
-
-        return itemRepository.findAllByOwnerIdOrderByIdAsc(ownerId);
-
+    public List<Item> search(String query) {
+        return itemRepository.search(query);
     }
-
-//    @Override
-//    public Item getItemsForComment(long itemId, long bookerId) {
-//        Item item8 = itemRepository.findAllItemForComment(itemId, bookerId);
-//        System.out.println("Test888 " + item8);
-//
-//        Optional<Item> item = Optional.ofNullable(itemRepository.findAllItemForComment(itemId, bookerId));
-//
-//
-////        if (item.isEmpty()) {
-////            throw new ValidationException("Test ");
-////        }
-//        System.out.println("Test999 " + item.get());
-//
-//        return item.get();
-//    }
 
 }

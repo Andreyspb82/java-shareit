@@ -12,7 +12,7 @@ import java.util.List;
 public class CommentMapper {
 
 
-    public static CommentDto mapToCommentDto (Comment comment) {
+    public static CommentDto mapToCommentDto(Comment comment) {
 
         return CommentDto.builder()
                 .id(comment.getId())
@@ -23,11 +23,11 @@ public class CommentMapper {
     }
 
 
-    public static List<CommentDto> mapToCommentsDto (List<Comment> comments) {
+    public static List<CommentDto> mapToCommentsDto(List<Comment> comments) {
         List<CommentDto> result = new ArrayList<>();
 
-        for (Comment comment: comments) {
-            result.add(mapToCommentDto (comment));
+        for (Comment comment : comments) {
+            result.add(mapToCommentDto(comment));
         }
         return result;
     }

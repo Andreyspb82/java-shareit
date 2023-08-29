@@ -19,6 +19,4 @@ public class CommentDto {
 
     private LocalDateTime created;
 
-
-
 }

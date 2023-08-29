@@ -17,13 +17,12 @@ import java.util.Set;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class InMemoryUserStorage implements UserStorage {
+public class UserStorageImpl implements UserStorage {
 
     private final UserRepository repository;
 
     @Override
     public User putUser(User user) {
-
         Set<ConstraintViolation<User>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(user);
         if (!violations.isEmpty()) {
             throw new ValidationException("User data not validated");
@@ -34,7 +33,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-       // repository.updateUser(user.getEmail(), user.getName(), user.getId());
         repository.save(user);
         log.info("PATCH/users request, user updated");
         return getUserById(user.getId());
@@ -62,21 +60,5 @@ public class InMemoryUserStorage implements UserStorage {
         log.info("DELETE/users request, user deleted");
         repository.deleteById(userId);
     }
-
-//    @Transactional
-//    @Override
-//    public UserDto add(UserDto userDto) {
-//        validationUser(userDto);
-//        validationEmailNull(userDto);
-//        validationEmail(userDto);
-//        User user = UserMapper.toUser(userDto);
-//        try {
-//            userDto = UserMapper.toUserDto(userRepository.save(user));
-//        } catch (DataIntegrityViolationException e) {
-//            log.info("Дубликат электронного адресса пользователя");
-//            throw new DuplicateEmailException("Дубликат электронного адреса пользователя");
-//        }
-//        return userDto;
-//    }
 
 }

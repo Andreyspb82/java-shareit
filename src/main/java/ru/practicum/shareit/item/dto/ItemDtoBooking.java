@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.booking.dto.BookingDtoForItem;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.item.model.Comment;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -30,7 +27,4 @@ public class ItemDtoBooking {
     private BookingDtoForItem nextBooking;
 
     private List<CommentDto> comments;
-
-
-
 }

@@ -14,5 +14,5 @@ public interface BookingStorage {
 
     public List<Booking> getAllByBooker (long bookerId, String state);
 
-    public List<Booking> getAllByOwner (long ownerId, String state);
+    public List<Booking> getAllByOwner(long ownerId, String state);
 }

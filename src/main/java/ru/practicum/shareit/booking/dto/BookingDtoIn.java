@@ -30,10 +30,4 @@ public class BookingDtoIn {
     @Positive
     private Long itemId;
 
-//     @Positive
-//     private UserDto booker;
-//
-//    @NotNull
-//    private Status status;
-
 }

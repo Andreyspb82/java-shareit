@@ -1,12 +1,16 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.BookingDtoForItem;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookingMapper {
@@ -15,7 +19,7 @@ public class BookingMapper {
 
         ItemDto itemDto = ItemMapper.mapToItemDto(booking.getItem());
 
-                return BookingDtoOut.builder()
+        return BookingDtoOut.builder()
                 .id(booking.getId())
                 .start(booking.getStart())
                 .end(booking.getEnd())
@@ -25,12 +29,20 @@ public class BookingMapper {
                 .build();
     }
 
-    public static BookingDtoForItem mapToBookingDtoForItem (Booking booking) {
+    public static BookingDtoForItem mapToBookingDtoForItem(Optional<Booking> booking) {
 
-        return BookingDtoForItem.builder()
-                .id(booking.getId())
-                .bookerId(booking.getBooker().getId())
-                .build();
-
+        return booking.map(value -> BookingDtoForItem.builder()
+                .id(value.getId())
+                .bookerId(value.getBooker().getId())
+                .build()).orElse(null);
     }
+
+    public static List<BookingDtoOut> mapToBookingsDtoOut(List<Booking> bookings) {
+        List<BookingDtoOut> result = new ArrayList<>();
+        for (Booking booking : bookings) {
+            result.add(mapToBookingDtoOut(booking));
+        }
+        return result;
+    }
+
 }

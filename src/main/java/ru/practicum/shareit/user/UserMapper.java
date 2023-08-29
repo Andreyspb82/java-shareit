@@ -15,17 +15,13 @@ public class UserMapper {
     }
 
     public static User mapToUpdateUser(UserDto userDto, User user) {
-       // User user = new User();
         if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
-
         return user;
     }
-
-
 
 }
