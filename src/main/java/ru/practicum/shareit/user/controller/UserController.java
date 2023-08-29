@@ -24,7 +24,6 @@ public class UserController {
 
     public final UserService userService;
 
-
     @PostMapping
     public User createUser(@RequestBody UserDto userDto) {
         return userService.createUser(userDto);
@@ -49,6 +48,5 @@ public class UserController {
     public void removeUser(@PathVariable long userId) {
         userService.removeUser(userId);
     }
-
 
 }

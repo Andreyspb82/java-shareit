@@ -11,7 +11,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
 
-
     public static CommentDto mapToCommentDto(Comment comment) {
 
         return CommentDto.builder()

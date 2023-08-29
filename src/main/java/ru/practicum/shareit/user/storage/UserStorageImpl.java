@@ -30,7 +30,6 @@ public class UserStorageImpl implements UserStorage {
         return repository.save(user);
     }
 
-
     @Override
     public User updateUser(User user) {
         repository.save(user);
