@@ -16,9 +16,7 @@ import java.util.Optional;
 public class BookingMapper {
 
     public static BookingDtoOut mapToBookingDtoOut(Booking booking) {
-
         ItemDto itemDto = ItemMapper.mapToItemDto(booking.getItem());
-
         return BookingDtoOut.builder()
                 .id(booking.getId())
                 .start(booking.getStart())
@@ -30,7 +28,6 @@ public class BookingMapper {
     }
 
     public static BookingDtoForItem mapToBookingDtoForItem(Optional<Booking> booking) {
-
         return booking.map(value -> BookingDtoForItem.builder()
                 .id(value.getId())
                 .bookerId(value.getBooker().getId())
@@ -44,5 +41,4 @@ public class BookingMapper {
         }
         return result;
     }
-
 }

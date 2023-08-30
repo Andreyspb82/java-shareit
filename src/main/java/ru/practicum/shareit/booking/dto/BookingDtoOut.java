@@ -26,5 +26,4 @@ public class BookingDtoOut {
     private User booker;
 
     private Status status;
-
 }

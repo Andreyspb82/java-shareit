@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS items (
     description VARCHAR(255) NOT NULL,
     is_available bool,
     owner_id BIGINT NOT NULL references users (id) on delete cascade
-
 );
 
 CREATE TABLE IF NOT EXISTS bookings (

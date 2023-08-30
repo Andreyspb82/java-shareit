@@ -1,63 +1,62 @@
-package ru.practicum.shareit.user.storage;
+package ru.practicum.shareit.user.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-@Component
+@Service
 @Slf4j
-@RequiredArgsConstructor
-public class UserStorageImpl implements UserStorage {
+@Data
+public class UserServiceImpl implements UserService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
     @Override
-    public User putUser(User user) {
-        Set<ConstraintViolation<User>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(user);
+    public User createUser(UserDto userDto) {
+        Set<ConstraintViolation<User>> violations = Validation
+                .buildDefaultValidatorFactory().getValidator().validate(UserMapper.mapToNewUser(userDto));
         if (!violations.isEmpty()) {
             throw new ValidationException("User data not validated");
         }
-        return repository.save(user);
+        return userRepository.save(UserMapper.mapToNewUser(userDto));
     }
 
     @Override
-    public User updateUser(User user) {
-        repository.save(user);
+    public User updateUser(UserDto userDto, long userId) {
+        User oldUser = getUserById(userId);
         log.info("PATCH/users request, user updated");
-        return getUserById(user.getId());
+        return userRepository.save(UserMapper.mapToUpdateUser(userDto, oldUser));
     }
 
     @Override
     public User getUserById(long userId) {
-
-        Optional<User> user = repository.findById(userId);
-        if (user.isEmpty()) {
+        if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with Id = " + userId + " does not exist");
         }
         log.info("GET/users/id request");
-        return user.get();
+        return userRepository.findById(userId).get();
     }
 
     @Override
     public List<User> getUsers() {
         log.info("GET/users request, (list of users)");
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public void removeUser(long userId) {
         log.info("DELETE/users request, user deleted");
-        repository.deleteById(userId);
+        userRepository.deleteById(userId);
     }
-
 }

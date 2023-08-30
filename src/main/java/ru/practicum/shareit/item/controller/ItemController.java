@@ -29,7 +29,6 @@ public class ItemController {
 
     private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
-
     @PostMapping
     public ItemDto createItem(@Valid @RequestBody ItemDto itemDto,
                               @RequestHeader(USER_ID_HEADER) long userId) {
@@ -66,6 +65,4 @@ public class ItemController {
                                     @RequestHeader(USER_ID_HEADER) long bookerId) {
         return itemService.createComment(comment, itemId, bookerId);
     }
-
-
 }

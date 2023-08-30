@@ -25,7 +25,6 @@ public class BookingController {
 
     public final BookingService bookingService;
 
-
     private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
@@ -34,14 +33,12 @@ public class BookingController {
         return bookingService.createBooking(bookingDtoIn, userId);
     }
 
-
     @PatchMapping("/{bookingId}")
     public BookingDtoOut updateBooking(@RequestParam(name = "approved") @NotNull Boolean approved,
                                        @PathVariable long bookingId,
                                        @RequestHeader(USER_ID_HEADER) long userId) {
         return bookingService.updateBooking(approved, bookingId, userId);
     }
-
 
     @GetMapping("/{bookingId}")
     public BookingDtoOut getBookingById(@PathVariable long bookingId,
@@ -60,6 +57,4 @@ public class BookingController {
                                              @RequestParam(required = false, defaultValue = "ALL") String state) {
         return bookingService.getAllByOwner(ownerId, state);
     }
-
-
 }

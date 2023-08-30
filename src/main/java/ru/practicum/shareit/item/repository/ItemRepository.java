@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findAllByOwnerIdOrderByIdAsc(long ownerId);
+    List<Item> findByOwnerIdOrderByIdAsc(long ownerId);
 
     @Query(value = "select * from items i " +
             "where upper(i.name) like upper(concat('%', ?1, '%')) " +

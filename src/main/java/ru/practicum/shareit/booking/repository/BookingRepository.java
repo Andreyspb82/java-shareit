@@ -9,50 +9,49 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findAllByBookerIdOrderByStartDesc(long userId);
+    List<Booking> findByBookerIdOrderByStartDesc(long userId);
 
-    List<Booking> findAllByBookerIdAndStartAfterOrderByStartDesc(long userId, LocalDateTime nowTime);
+    List<Booking> findByBookerIdAndStartAfterOrderByStartDesc(long userId, LocalDateTime nowTime);
 
-    List<Booking> findAllByBookerIdAndEndBeforeOrderByStartDesc(long userId, LocalDateTime nowTime);
+    List<Booking> findByBookerIdAndEndBeforeOrderByStartDesc(long userId, LocalDateTime nowTime);
 
-    List<Booking> findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(long userId, LocalDateTime nowStart, LocalDateTime nowEnd);
-
+    List<Booking> findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(long userId, LocalDateTime nowStart, LocalDateTime nowEnd);
 
     @Query(value = "select * from bookings b" +
             " where b.booker_id = ?1 and b.status = ?2  order by b.start_date desc", nativeQuery = true)
-    List<Booking> findAllByBookerIdAndStatus(long userId, String state);
+    List<Booking> findByBookerIdAndStatus(long userId, String state);
 
     @Query(value = "select * from bookings b " +
             "where b.item_id in " +
             "(select i.id from items i " +
             "where i.owner_id =?1) " +
             "order by b.start_date desc", nativeQuery = true)
-    List<Booking> findAllByOwnerId(long ownerId);
+    List<Booking> findByOwnerId(long ownerId);
 
     @Query(value = "select * from bookings b " +
             "where b.item_id in " +
             "(select i.id from items i " +
             "where i.owner_id =?1) " +
             "and b.start_date > current_timestamp order by b.start_date desc", nativeQuery = true)
-    List<Booking> findAllByOwnerIdFuture(long ownerId);
+    List<Booking> findByOwnerIdFuture(long ownerId);
 
     @Query(value = "select * from bookings b " +
             "where b.item_id in (select i.id from items i where i.owner_id =?1) " +
             "and b.end_date < current_timestamp " +
             "order by b.start_date desc", nativeQuery = true)
-    List<Booking> findAllByOwnerIdPast(long ownerId);
+    List<Booking> findByOwnerIdPast(long ownerId);
 
     @Query(value = "select * from bookings b " +
             "where b.item_id in (select i.id from items i where i.owner_id =?1) " +
             "and b.start_date < current_timestamp and b.end_date > current_timestamp " +
             "order by b.start_date desc", nativeQuery = true)
-    List<Booking> findAllByOwnerIdCurrent(long ownerId);
+    List<Booking> findByOwnerIdCurrent(long ownerId);
 
     @Query(value = "select * from bookings b " +
             "where b.item_id in (select i.id from items i where i.owner_id =?1) " +
             "and b.status = ?2 " +
             "order by b.start_date desc", nativeQuery = true)
-    List<Booking> findAllByOwnerIdState(long ownerId, String state);
+    List<Booking> findByOwnerIdState(long ownerId, String state);
 
     @Query(value = "select * from bookings b " +
             "where b.item_id=?1 and b.start_date < current_timestamp and b.status = 'APPROVED' " +
@@ -68,6 +67,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "where b.item_id = ?1 and b.booker_id = ?2 and b.end_date < current_timestamp " +
             "order by b.end_date asc limit 1", nativeQuery = true)
     Booking findBookingForComment(long itemId, long bookerId);
-
-
 }

@@ -14,12 +14,9 @@ public class ItemRequest {
 
     private Integer id;
 
-
     private String description;
 
-
     private Integer requestor;
-
 
     private LocalDateTime created;
 }
