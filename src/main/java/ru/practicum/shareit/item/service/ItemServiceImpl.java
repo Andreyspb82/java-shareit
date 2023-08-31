@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
 
         Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(item);
         if (!violations.isEmpty()) {
-            throw new ValidationException("Item has not been validated");
+            throw new ValidationException("Item has not been validated: " + new ArrayList<>(violations).get(0).getMessage());
         }
         return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
@@ -72,7 +72,7 @@ public class ItemServiceImpl implements ItemService {
 
         Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(oldItem);
         if (!violations.isEmpty()) {
-            throw new ValidationException("Item has not been validated");
+            throw new ValidationException("Item has not been validated: " + new ArrayList<>(violations).get(0).getMessage());
         }
         return ItemMapper.mapToItemDto(itemRepository.save(oldItem));
     }

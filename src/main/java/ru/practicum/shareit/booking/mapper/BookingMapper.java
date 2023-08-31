@@ -8,9 +8,9 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookingMapper {
@@ -35,10 +35,8 @@ public class BookingMapper {
     }
 
     public static List<BookingDtoOut> mapToBookingsDtoOut(List<Booking> bookings) {
-        List<BookingDtoOut> result = new ArrayList<>();
-        for (Booking booking : bookings) {
-            result.add(mapToBookingDtoOut(booking));
-        }
-        return result;
+        return bookings.stream()
+                .map(BookingMapper::mapToBookingDtoOut)
+                .collect(Collectors.toList());
     }
 }

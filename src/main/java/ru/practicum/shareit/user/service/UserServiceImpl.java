@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
         Set<ConstraintViolation<User>> violations = Validation
                 .buildDefaultValidatorFactory().getValidator().validate(UserMapper.mapToNewUser(userDto));
         if (!violations.isEmpty()) {
-            throw new ValidationException("User data not validated");
+            throw new ValidationException("User data not validated: " + new ArrayList<>(violations).get(0).getMessage());
         }
         return userRepository.save(UserMapper.mapToNewUser(userDto));
     }

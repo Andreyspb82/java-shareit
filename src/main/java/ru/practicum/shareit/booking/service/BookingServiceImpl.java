@@ -70,12 +70,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDtoOut updateBooking(Boolean approved, long bookingId, long userId) {
-        User userTest = userService.getUserById(userId);
         Booking booking = getBookingById(bookingId);
         Item item = booking.getItem();
         User user = item.getOwner();
 
-        if (!user.equals(userTest)) {
+        if (user.getId() != userId) {
             throw new NotFoundException("Invalid owner");
         }
         if (approved && booking.getStatus().equals(Status.APPROVED)) {
