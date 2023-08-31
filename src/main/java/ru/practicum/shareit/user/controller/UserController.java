@@ -14,7 +14,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Validated
@@ -25,9 +24,8 @@ public class UserController {
 
     public final UserService userService;
 
-
     @PostMapping
-    public User createUser(@Valid @RequestBody UserDto userDto) {
+    public User createUser(@RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
 
@@ -37,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@Valid @PathVariable int userId) {
+    public User getUserById(@PathVariable long userId) {
         return userService.getUserById(userId);
     }
 
@@ -47,9 +45,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void removeUser(@Valid @PathVariable int userId) {
+    public void removeUser(@PathVariable long userId) {
         userService.removeUser(userId);
     }
-
-
 }

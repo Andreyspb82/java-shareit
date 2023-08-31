@@ -3,121 +3,136 @@ package ru.practicum.shareit.item.service;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoBooking;
+import ru.practicum.shareit.item.mapper.CommentMapper;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.request.storage.ItemRequestStorage;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.item.repository.CommentRepository;
+import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @Data
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemStorage itemStorage;
+    private final ItemRepository itemRepository;
 
-    private final UserStorage userStorage;
+    private final UserService userService;
 
-    private final ItemRequestStorage itemRequestStorage;
+    private final BookingRepository bookingRepository;
+
+    private final CommentRepository commentRepository;
 
     @Override
-    public ItemDto createItem(ItemDto itemDto, int userId) {
-        userStorage.getUserById(userId);
+    public ItemDto createItem(ItemDto itemDto, long userId) {
+        User user = userService.getUserById(userId);
+        Item item = ItemMapper.mapToItem(itemDto, user);
 
-        Item item = Item.builder()
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .owner(userStorage.getUserById(userId))
-                .request(itemDto.getRequest() != null ? itemRequestStorage.getItemRequest(itemDto.getRequest().getId()) : null)
-                .build();
-        return toItemDto(itemStorage.putItem(item));
+        Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(item);
+        if (!violations.isEmpty()) {
+            throw new ValidationException("Item has not been validated: " + new ArrayList<>(violations).get(0).getMessage());
+        }
+        return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto, int userId) {
-        userStorage.getUserById(userId);
-
-        Item oldItem = itemStorage.getItemById(itemDto.getId());
+    public ItemDto updateItem(ItemDto itemDto, long userId) {
+        User user = userService.getUserById(userId);
+        Item oldItem = getItemById(itemDto.getId());
 
         if (oldItem.getOwner().getId() != userId) {
             throw new NotFoundException("Invalid item owner");
         }
-
         if (itemDto.getName() != null) {
             oldItem.setName(itemDto.getName());
         }
-
         if (itemDto.getDescription() != null) {
             oldItem.setDescription(itemDto.getDescription());
         }
-
         if (itemDto.getAvailable() != null) {
             oldItem.setAvailable(itemDto.getAvailable());
         }
+        oldItem.setOwner(user);
 
         Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(oldItem);
         if (!violations.isEmpty()) {
-            throw new ValidationException("Item has not been validated");
+            throw new ValidationException("Item has not been validated: " + new ArrayList<>(violations).get(0).getMessage());
         }
-
-        return toItemDto(itemStorage.updateItem(oldItem));
+        return ItemMapper.mapToItemDto(itemRepository.save(oldItem));
     }
 
     @Override
-    public ItemDto getItemById(int itemId, int userId) {
-        userStorage.getUserById(userId);
-        return toItemDto(itemStorage.getItemById(itemId));
+    public ItemDtoBooking getItemById(long itemId, long userId) {
+        userService.getUserById(userId);
+        Item item = getItemById(itemId);
+        List<Comment> comments = commentRepository.findByItemId(itemId);
+        List<CommentDto> commentsDto = CommentMapper.mapToCommentsDto(comments);
+        item.setComments(commentsDto);
+
+        Optional<Booking> bookingLast = Optional.ofNullable(bookingRepository.findByItemIdLast(itemId));
+        Optional<Booking> bookingNext = Optional.ofNullable(bookingRepository.findByItemIdNext(itemId));
+
+        if (userId == item.getOwner().getId()) {
+            return ItemMapper.mapToItemDtoBooking(bookingLast, bookingNext, item);
+        } else {
+            return ItemMapper.mapToItemDtoBooking(Optional.empty(), Optional.empty(), item);
+        }
     }
 
-
     @Override
-    public List<ItemDto> getItemsByUserId(int userId) {
-        userStorage.getUserById(userId);
+    public List<ItemDtoBooking> getItemsByUserId(long userId) {
+        List<Item> items = itemRepository.findByOwnerIdOrderByIdAsc(userId);
+        List<ItemDtoBooking> result = new ArrayList<>();
 
-        return itemStorage.getItems()
-                .stream()
-                .filter(item -> item.getOwner().getId().equals(userId))
-                .map(this::toItemDto)
-                .collect(Collectors.toList());
+        for (Item item : items) {
+            result.add(getItemById(item.getId(), userId));
+        }
+        return result;
     }
 
     @Override
     public List<ItemDto> getItemsByQuery(String query) {
-        List<ItemDto> itemsDto = new ArrayList<>();
-        List<Item> itemsList = itemStorage.getItems();
-
+        List<Item> items = itemRepository.search(query);
         if (query.isEmpty()) {
             return new ArrayList<>();
         }
+        return ItemMapper.mapToItemsDto(items);
+    }
 
-        for (Item item : itemsList) {
-            if ((item.getName().toLowerCase().contains(query.toLowerCase()) ||
-                    item.getDescription().toLowerCase().contains(query.toLowerCase())) &&
-                    item.getAvailable()) {
-                itemsDto.add(toItemDto(item));
-            }
+    @Override
+    public CommentDto createComment(Comment comment, long itemId, long bookerId) {
+        Optional<Booking> booking = Optional.ofNullable(bookingRepository.findBookingForComment(itemId, bookerId));
+        if (booking.isEmpty()) {
+            throw new ValidationException("The user has not used the item");
         }
-        return itemsDto;
+        Item item = getItemById(itemId);
+        User user = userService.getUserById(bookerId);
+        comment.setItem(item);
+        comment.setAuthor(user);
+        return CommentMapper.mapToCommentDto(commentRepository.save(comment));
     }
 
-    private ItemDto toItemDto(Item item) {
-        return ItemDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .request(item.getRequest() != null ? item.getRequest() : null)
-                .build();
+    @Override
+    public Item getItemById(long itemId) {
+        if (!itemRepository.existsById(itemId)) {
+            throw new NotFoundException("Item with Id = " + itemId + " does not exist");
+        }
+        return itemRepository.findById(itemId).get();
     }
-
 }
