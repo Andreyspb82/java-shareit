@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -16,6 +17,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -39,10 +42,19 @@ public class ItemServiceImpl implements ItemService {
 
     private final CommentRepository commentRepository;
 
+    private final ItemRequestRepository itemRequestRepository;
+
     @Override
     public ItemDto createItem(ItemDto itemDto, long userId) {
         User user = userService.getUserById(userId);
         Item item = ItemMapper.mapToItem(itemDto, user);
+      //  ItemRequest itemRequest = new ItemRequest();
+       // item.setRequest(itemRequest);
+
+        if (itemDto.getRequestId() != null) {
+            Optional<ItemRequest> itemRequest = itemRequestRepository.findById(itemDto.getRequestId());
+            item.setRequest(itemRequest.get());
+        }
 
         Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(item);
         if (!violations.isEmpty()) {
@@ -96,8 +108,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoBooking> getItemsByUserId(long userId) {
-        List<Item> items = itemRepository.findByOwnerIdOrderByIdAsc(userId);
+    public List<ItemDtoBooking> getItemsByUserId(long userId, Pageable page) {
+        List<Item> items = itemRepository.findByOwnerIdOrderByIdAsc(userId, page);
         List<ItemDtoBooking> result = new ArrayList<>();
 
         for (Item item : items) {
@@ -107,8 +119,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItemsByQuery(String query) {
-        List<Item> items = itemRepository.search(query);
+    public List<ItemDto> getItemsByQuery(String query, Pageable page) {
+        List<Item> items = itemRepository.search(query, page);
         if (query.isEmpty()) {
             return new ArrayList<>();
         }

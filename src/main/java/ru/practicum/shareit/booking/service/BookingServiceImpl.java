@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDtoIn;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
@@ -103,41 +104,41 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoOut> getAllByBooker(long bookerId, String state) {
+    public List<BookingDtoOut> getAllByBooker(long bookerId, String state, Pageable page) {
         userService.getUserById(bookerId);
         if (state.equals(String.valueOf(State.ALL)) || state.isEmpty()) {
             return BookingMapper.mapToBookingsDtoOut(bookingRepository
-                    .findByBookerIdOrderByStartDesc(bookerId));
+                    .findByBookerIdOrderByStartDesc(bookerId, page));
         } else if (state.equals(String.valueOf(State.FUTURE))) {
             return BookingMapper.mapToBookingsDtoOut(bookingRepository
-                    .findByBookerIdAndStartAfterOrderByStartDesc(bookerId, LocalDateTime.now()));
+                    .findByBookerIdAndStartAfterOrderByStartDesc(bookerId, LocalDateTime.now(), page));
         } else if (state.equals(String.valueOf(State.PAST))) {
             return BookingMapper.mapToBookingsDtoOut(bookingRepository
-                    .findByBookerIdAndEndBeforeOrderByStartDesc(bookerId, LocalDateTime.now()));
+                    .findByBookerIdAndEndBeforeOrderByStartDesc(bookerId, LocalDateTime.now(), page));
         } else if (state.equals(String.valueOf(State.CURRENT))) {
             return BookingMapper.mapToBookingsDtoOut(bookingRepository
-                    .findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(bookerId, LocalDateTime.now(), LocalDateTime.now()));
+                    .findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(bookerId, LocalDateTime.now(), LocalDateTime.now(), page));
         } else if (state.equals(String.valueOf(State.WAITING)) || state.equals(String.valueOf(State.REJECTED))) {
             return BookingMapper.mapToBookingsDtoOut(bookingRepository
-                    .findByBookerIdAndStatus(bookerId, state));
+                    .findByBookerIdAndStatus(bookerId, state, page));
         } else {
             throw new ValidationException("Unknown state: " + state);
         }
     }
 
     @Override
-    public List<BookingDtoOut> getAllByOwner(long ownerId, String state) {
+    public List<BookingDtoOut> getAllByOwner(long ownerId, String state, Pageable page) {
         userService.getUserById(ownerId);
         if (state.equals(String.valueOf(State.ALL)) || state.isEmpty()) {
-            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerId(ownerId));
+            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerId(ownerId, page));
         } else if (state.equals(String.valueOf(State.FUTURE))) {
-            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerIdFuture(ownerId));
+            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerIdFuture(ownerId, page));
         } else if (state.equals(String.valueOf(State.PAST))) {
-            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerIdPast(ownerId));
+            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerIdPast(ownerId, page));
         } else if (state.equals(String.valueOf(State.CURRENT))) {
-            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerIdCurrent(ownerId));
+            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerIdCurrent(ownerId, page));
         } else if (state.equals(String.valueOf(State.WAITING)) || state.equals(String.valueOf(State.REJECTED))) {
-            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerIdState(ownerId, state));
+            return BookingMapper.mapToBookingsDtoOut(bookingRepository.findByOwnerIdState(ownerId, state, page));
         } else {
             throw new ValidationException("Unknown state: " + state);
         }
