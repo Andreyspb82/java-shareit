@@ -103,7 +103,6 @@ class BookingServiceImplTest {
                 .build();
     }
 
-
     @Test
     void createBooking() {
         when(userService.getUserById(Mockito.anyLong())).thenReturn(userBooker);
@@ -362,8 +361,8 @@ class BookingServiceImplTest {
 
         when(userService.getUserById(Mockito.anyLong())).thenReturn(userBooker);
         when(bookingRepository
-                .findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc
-                        (Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class), Mockito.any(PageRequest.class)))
+                .findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(Mockito.anyLong(),
+                        Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class), Mockito.any(PageRequest.class)))
                 .thenReturn(sourceBookings);
 
         List<BookingDtoOut> targetBookingsDto = bookingService.getAllByBooker(userBooker.getId(), "CURRENT", page);

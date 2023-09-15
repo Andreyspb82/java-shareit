@@ -250,7 +250,7 @@ class ItemServiceImplIntegrationTest {
     }
 
     @Test
-    public void GetItemById() {
+    public void getItemById() {
         User user = userService.createUser(userDtoTest1);
         long userId = user.getId();
         ItemDto itemDto = itemService.createItem(itemDtoTest1, userId);
@@ -264,7 +264,7 @@ class ItemServiceImplIntegrationTest {
     }
 
     @Test
-    public void GetItemByIdShouldReturnErrorNotItem() {
+    public void getItemByIdShouldReturnErrorNotItem() {
         User user = userService.createUser(userDtoTest1);
         long userId = user.getId();
         ItemDto itemDto = itemService.createItem(itemDtoTest1, userId);
@@ -277,7 +277,6 @@ class ItemServiceImplIntegrationTest {
         });
         assertEquals("Item with Id = 99 does not exist", ex.getMessage());
     }
-
 
     private static void wait(int ms) {
         try {
