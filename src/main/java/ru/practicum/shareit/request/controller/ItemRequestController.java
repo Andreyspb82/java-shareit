@@ -3,7 +3,14 @@ package ru.practicum.shareit.request.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoIn;
 import ru.practicum.shareit.request.service.ItemRequestService;
@@ -39,17 +46,12 @@ public class ItemRequestController {
                                                          @Min(0) @RequestParam(defaultValue = "0") int from,
                                                          @Min(0) @RequestParam(defaultValue = "10") int size) {
         PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
-        return itemRequestService.getAllRequsetByUserId(userId, page);
+        return itemRequestService.getAllByNotRequestorId(userId, page);
     }
 
-    @GetMapping ("{requestId}")
-    public ItemRequestDto getRequestById (@RequestHeader(USER_ID_HEADER) long userId,
-                                          @PathVariable long requestId){
+    @GetMapping("{requestId}")
+    public ItemRequestDto getRequestById(@RequestHeader(USER_ID_HEADER) long userId,
+                                         @PathVariable long requestId) {
         return itemRequestService.getRequestById(userId, requestId);
     }
-
-
-
-
-
 }

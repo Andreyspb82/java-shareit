@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface ItemRequestService {
 
-    public ItemRequestDto createItemRequest (ItemRequestDtoIn itemRequestDtoIn, long userId);
+    public ItemRequestDto createItemRequest(ItemRequestDtoIn itemRequestDtoIn, long userId);
 
-    public List<ItemRequestDto> getAllByRequestorId (long userId);
+    public List<ItemRequestDto> getAllByRequestorId(long userId);
 
-    public List<ItemRequestDto> getAllRequsetByUserId(long userId, Pageable page);
+    public List<ItemRequestDto> getAllByNotRequestorId(long userId, Pageable page);
 
-    public ItemRequestDto getRequestById (long userId, long requestId);
+    public ItemRequestDto getRequestById(long userId, long requestId);
 }

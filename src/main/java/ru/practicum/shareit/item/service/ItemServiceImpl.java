@@ -48,8 +48,6 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto createItem(ItemDto itemDto, long userId) {
         User user = userService.getUserById(userId);
         Item item = ItemMapper.mapToItem(itemDto, user);
-      //  ItemRequest itemRequest = new ItemRequest();
-       // item.setRequest(itemRequest);
 
         if (itemDto.getRequestId() != null) {
             Optional<ItemRequest> itemRequest = itemRequestRepository.findById(itemDto.getRequestId());
@@ -90,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoBooking getItemById(long itemId, long userId) {
+    public ItemDtoBooking getItemWithBookingById(long itemId, long userId) {
         userService.getUserById(userId);
         Item item = getItemById(itemId);
         List<Comment> comments = commentRepository.findByItemId(itemId);
@@ -113,7 +111,7 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDtoBooking> result = new ArrayList<>();
 
         for (Item item : items) {
-            result.add(getItemById(item.getId(), userId));
+            result.add(getItemWithBookingById(item.getId(), userId));
         }
         return result;
     }

@@ -46,9 +46,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoBooking getItemById1(@PathVariable long itemId,
-                                       @RequestHeader(USER_ID_HEADER) long userId) {
-        return itemService.getItemById(itemId, userId);
+    public ItemDtoBooking getItemById(@PathVariable long itemId,
+                                      @RequestHeader(USER_ID_HEADER) long userId) {
+        return itemService.getItemWithBookingById(itemId, userId);
     }
 
     @GetMapping

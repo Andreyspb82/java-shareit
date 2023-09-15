@@ -53,7 +53,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getAllRequsetByUserId(long userId, Pageable page) {
+    public List<ItemRequestDto> getAllByNotRequestorId(long userId, Pageable page) {
         userService.getUserById(userId);
         List<ItemRequest> requests = itemRequestRepository.findByRequestorIdNotOrderByCreatedDesc(userId, page);
         return getRequests(requests);

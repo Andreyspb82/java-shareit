@@ -15,7 +15,7 @@ public interface ItemService {
 
     public ItemDto updateItem(ItemDto itemDto, long userId);
 
-    public ItemDtoBooking getItemById(long itemId, long userId);
+    public ItemDtoBooking getItemWithBookingById(long itemId, long userId);
 
     public List<ItemDtoBooking> getItemsByUserId(long userId, Pageable page);
 
