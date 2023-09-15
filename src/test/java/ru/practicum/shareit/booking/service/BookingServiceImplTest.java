@@ -149,8 +149,8 @@ class BookingServiceImplTest {
 
     @Test
     void createBookingShouldReturnErrorStartIsAfterEnd() {
-        bookingDtoInTest.setStart(LocalDateTime.now().plusSeconds(3));
-        bookingDtoInTest.setEnd(LocalDateTime.now().plusSeconds(2));
+        bookingDtoInTest.setStart(LocalDateTime.now().plusMinutes(10));
+        bookingDtoInTest.setEnd(LocalDateTime.now().plusMinutes(9));
 
         when(userService.getUserById(Mockito.anyLong())).thenReturn(userBooker);
         when(itemService.getItemById(Mockito.anyLong())).thenReturn(itemTest);
@@ -166,8 +166,8 @@ class BookingServiceImplTest {
 
     @Test
     void createBookingShouldReturnErrorStartIsEqualEnd() {
-        bookingDtoInTest.setStart(LocalDateTime.now().plusSeconds(2));
-        bookingDtoInTest.setEnd(LocalDateTime.now().plusSeconds(2));
+        bookingDtoInTest.setStart(LocalDateTime.now().plusMinutes(10));
+        bookingDtoInTest.setEnd(bookingDtoInTest.getStart());
 
         when(userService.getUserById(Mockito.anyLong())).thenReturn(userBooker);
         when(itemService.getItemById(Mockito.anyLong())).thenReturn(itemTest);

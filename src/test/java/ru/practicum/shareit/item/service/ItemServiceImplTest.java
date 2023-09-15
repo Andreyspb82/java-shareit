@@ -138,7 +138,7 @@ class ItemServiceImplTest {
                 ItemDto itemReturn = itemService.createItem(itemDtoTest, 1L);
             }
         });
-        assertEquals("Item has not been validated: не должно быть пустым", ex.getMessage());
+        assertEquals("Item has not been validated: must not be blank", ex.getMessage());
     }
 
     @Test
@@ -227,7 +227,7 @@ class ItemServiceImplTest {
                 ItemDto itemReturn = itemService.updateItem(itemDtoTest, userId);
             }
         });
-        assertEquals("Item has not been validated: не должно быть пустым", ex.getMessage());
+        assertEquals("Item has not been validated: must not be blank", ex.getMessage());
     }
 
     @Test
@@ -246,7 +246,7 @@ class ItemServiceImplTest {
                 ItemDto itemReturn = itemService.updateItem(itemDtoTest, userId);
             }
         });
-        assertEquals("Item has not been validated: не должно быть пустым", ex.getMessage());
+        assertEquals("Item has not been validated: must not be blank", ex.getMessage());
     }
 
     @Test
@@ -324,7 +324,6 @@ class ItemServiceImplTest {
         assertTrue(targetItemDtos.isEmpty());
     }
 
-
     @Test
     void createComment() {
         when(bookingRepository.findBookingForComment(Mockito.anyLong(), Mockito.anyLong())).thenReturn(bookingTest);
@@ -375,6 +374,4 @@ class ItemServiceImplTest {
         });
         assertEquals("Item with Id = 1 does not exist", ex.getMessage());
     }
-
-
 }

@@ -62,7 +62,7 @@ class UserServiceImplTest {
                 userService.createUser(userDtoTest1);
             }
         });
-        assertEquals("User data not validated: не должно быть пустым", ex.getMessage());
+        assertEquals("User data not validated: must not be empty", ex.getMessage());
     }
 
     @Test
@@ -74,7 +74,7 @@ class UserServiceImplTest {
                 userService.createUser(userDtoTest1);
             }
         });
-        assertEquals("User data not validated: должно иметь формат адреса электронной почты", ex.getMessage());
+        assertEquals("User data not validated: must be a well-formed email address", ex.getMessage());
     }
 
     @Test
