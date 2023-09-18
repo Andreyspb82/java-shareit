@@ -55,15 +55,15 @@ class ItemRequestServiceImplTest {
     @InjectMocks
     private ItemRequestServiceImpl itemRequestService;
 
-    ItemRequestDtoIn itemRequestDtoIn;
+    private ItemRequestDtoIn itemRequestDtoIn;
 
-    ItemRequest itemRequestTest;
+    private ItemRequest itemRequestTest;
 
-    User userOwner;
+    private User userOwner;
 
-    User userRequestor;
+    private User userRequestor;
 
-    Item itemTest;
+    private Item itemTest;
 
     @BeforeEach
     public void setUp() {

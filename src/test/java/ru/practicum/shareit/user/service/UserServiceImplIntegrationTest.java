@@ -38,10 +38,10 @@ class UserServiceImplIntegrationTest {
     @Autowired
     private EntityManager em;
 
-    UserDto userDtoTest1;
-    UserDto userDtoTest2;
+    private UserDto userDtoTest1;
+    private UserDto userDtoTest2;
 
-    User userTest;
+    private User userTest;
 
     @BeforeEach
     public void setUp() {

@@ -39,7 +39,7 @@ class UserControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    User userTest1;
+    private User userTest1;
 
     @BeforeEach
     public void setUp() {

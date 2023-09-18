@@ -30,8 +30,8 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    UserDto userDtoTest1;
-    User userTest;
+    private UserDto userDtoTest1;
+    private User userTest;
 
     @BeforeEach
     public void setUp() {

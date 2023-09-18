@@ -25,13 +25,13 @@ class ItemRepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
-    ItemRequestRepository itemRequestRepository;
+    private ItemRequestRepository itemRequestRepository;
 
-    Item itemTest;
+    private Item itemTest;
 
-    User userTest;
+    private User userTest;
 
-    ItemRequest itemRequest;
+    private ItemRequest itemRequest;
 
     @BeforeEach
     public void setUp() {

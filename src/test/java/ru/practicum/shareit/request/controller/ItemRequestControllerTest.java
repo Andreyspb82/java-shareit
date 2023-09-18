@@ -36,9 +36,9 @@ class ItemRequestControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    ItemRequestDto itemRequestTest;
+    private ItemRequestDto itemRequestTest;
 
-    ItemRequestDtoIn itemRequestDtoIn;
+    private ItemRequestDtoIn itemRequestDtoIn;
 
     @BeforeEach
     public void setUp() {

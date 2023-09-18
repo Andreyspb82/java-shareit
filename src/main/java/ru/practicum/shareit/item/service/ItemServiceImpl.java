@@ -51,7 +51,8 @@ public class ItemServiceImpl implements ItemService {
 
         if (itemDto.getRequestId() != null) {
             Optional<ItemRequest> itemRequest = itemRequestRepository.findById(itemDto.getRequestId());
-            item.setRequest(itemRequest.get());
+            item.setRequest(itemRequest.orElseThrow(() ->
+                    new NotFoundException("Request with Id = " + itemDto.getRequestId() + " does not exist")));
         }
 
         Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(item);

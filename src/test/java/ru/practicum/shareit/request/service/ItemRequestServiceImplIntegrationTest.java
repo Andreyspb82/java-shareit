@@ -53,15 +53,15 @@ class ItemRequestServiceImplIntegrationTest {
     @Autowired
     private EntityManager em;
 
-    User userOwner;
+    private User userOwner;
 
-    User userRequestor;
+    private User userRequestor;
 
-    User userTest;
+    private User userTest;
 
-    ItemDto itemDto;
+    private ItemDto itemDto;
 
-    ItemRequestDtoIn itemRequestDtoIn;
+    private ItemRequestDtoIn itemRequestDtoIn;
 
     @BeforeEach
     public void setUp() {

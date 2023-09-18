@@ -45,7 +45,7 @@ public class ItemRequestController {
     public List<ItemRequestDto> getAllByRequestsByUserId(@RequestHeader(USER_ID_HEADER) long userId,
                                                          @Min(0) @RequestParam(defaultValue = "0") int from,
                                                          @Min(0) @RequestParam(defaultValue = "10") int size) {
-        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
+        PageRequest page = PageRequest.of(from / size, size);
         return itemRequestService.getAllByNotRequestorId(userId, page);
     }
 

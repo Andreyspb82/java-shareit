@@ -39,10 +39,9 @@ class BookingControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    BookingDtoIn bookingDtoIn;
+    private BookingDtoIn bookingDtoIn;
 
-    BookingDtoOut bookingDtoOut;
-
+    private BookingDtoOut bookingDtoOut;
 
     @BeforeEach
     public void setUp() {
@@ -57,7 +56,6 @@ class BookingControllerTest {
                 .status(Status.WAITING)
                 .build();
     }
-
 
     @Test
     public void createBooking() throws Exception {

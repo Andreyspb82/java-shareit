@@ -46,15 +46,15 @@ class BookingServiceImplIntegrationTest {
     @Autowired
     private EntityManager em;
 
-    User userOwner;
+    private User userOwner;
 
-    User userBooker;
+    private User userBooker;
 
-    User userTest;
+    private User userTest;
 
-    ItemDto itemDto;
+    private ItemDto itemDto;
 
-    BookingDtoIn bookingDtoInTest;
+    private BookingDtoIn bookingDtoInTest;
 
     @BeforeEach
     public void setUp() {

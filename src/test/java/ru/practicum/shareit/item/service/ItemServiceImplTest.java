@@ -64,15 +64,15 @@ class ItemServiceImplTest {
     @InjectMocks
     private ItemServiceImpl itemService;
 
-    ItemDto itemDtoTest;
-    Item itemTest;
+    private ItemDto itemDtoTest;
+    private Item itemTest;
 
-    UserDto userDtoTest1;
-    User userTest;
+    private UserDto userDtoTest1;
+    private User userTest;
 
-    Booking bookingTest;
+    private Booking bookingTest;
 
-    Comment commentTest;
+    private Comment commentTest;
 
     @BeforeEach
     public void setUp() {

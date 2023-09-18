@@ -42,13 +42,13 @@ class ItemControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    ItemDto itemDtoTest;
+    private ItemDto itemDtoTest;
 
-    ItemDtoBooking itemDtoBookingTest;
+    private ItemDtoBooking itemDtoBookingTest;
 
-    Comment comment;
+    private Comment comment;
 
-    User user;
+    private User user;
 
     @BeforeEach
     public void setUp() {

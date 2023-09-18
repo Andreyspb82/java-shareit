@@ -68,20 +68,18 @@ class ItemServiceImplIntegrationTest {
     @Autowired
     private EntityManager em;
 
+    private ItemDto itemDtoTest1;
+    private Item itemTest;
 
-    ItemDto itemDtoTest1;
-    Item itemTest;
+    private UserDto userDtoTest1;
+    private UserDto userDtoTest2;
+    private User userTest;
 
-    UserDto userDtoTest1;
-    UserDto userDtoTest2;
-    User userTest;
+    private Booking bookingTest;
 
-    Booking bookingTest;
+    private BookingDtoIn bookingDtoIn;
 
-    BookingDtoIn bookingDtoIn;
-
-    Comment commentTest;
-
+    private Comment commentTest;
 
     @BeforeEach
     public void setUp() {

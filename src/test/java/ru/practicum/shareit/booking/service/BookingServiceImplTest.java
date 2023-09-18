@@ -49,17 +49,17 @@ class BookingServiceImplTest {
     @InjectMocks
     private BookingServiceImpl bookingService;
 
-    Item itemTest;
+    private Item itemTest;
 
-    User userOwner;
+    private User userOwner;
 
-    User userBooker;
+    private User userBooker;
 
-    User userTest;
+    private User userTest;
 
-    BookingDtoIn bookingDtoInTest;
+    private BookingDtoIn bookingDtoInTest;
 
-    Booking bookingTest;
+    private Booking bookingTest;
 
     @BeforeEach
     public void setUp() {

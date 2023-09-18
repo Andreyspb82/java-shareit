@@ -55,7 +55,7 @@ public class ItemController {
     public List<ItemDtoBooking> getItemsByUserId(@RequestHeader(USER_ID_HEADER) long userId,
                                                  @Min(0) @RequestParam(defaultValue = "0") int from,
                                                  @Min(0) @RequestParam(defaultValue = "10") int size) {
-        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
+        PageRequest page = PageRequest.of(from / size, size);
         return itemService.getItemsByUserId(userId, page);
     }
 
@@ -63,7 +63,7 @@ public class ItemController {
     public List<ItemDto> getItemsByQuery(@RequestParam("text") String query,
                                          @Min(0) @RequestParam(defaultValue = "0") int from,
                                          @Min(0) @RequestParam(defaultValue = "10") int size) {
-        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
+        PageRequest page = PageRequest.of(from / size, size);
         return itemService.getItemsByQuery(query, page);
     }
 
