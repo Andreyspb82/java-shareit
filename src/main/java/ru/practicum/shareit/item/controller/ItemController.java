@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 
@@ -44,19 +46,25 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoBooking getItemById1(@PathVariable long itemId,
-                                       @RequestHeader(USER_ID_HEADER) long userId) {
-        return itemService.getItemById(itemId, userId);
+    public ItemDtoBooking getItemById(@PathVariable long itemId,
+                                      @RequestHeader(USER_ID_HEADER) long userId) {
+        return itemService.getItemWithBookingById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemDtoBooking> getItemsByUserId(@RequestHeader(USER_ID_HEADER) long userId) {
-        return itemService.getItemsByUserId(userId);
+    public List<ItemDtoBooking> getItemsByUserId(@RequestHeader(USER_ID_HEADER) long userId,
+                                                 @Min(0) @RequestParam(defaultValue = "0") int from,
+                                                 @Min(0) @RequestParam(defaultValue = "10") int size) {
+        PageRequest page = PageRequest.of(from / size, size);
+        return itemService.getItemsByUserId(userId, page);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> getItemsByQuery(@RequestParam("text") String query) {
-        return itemService.getItemsByQuery(query);
+    public List<ItemDto> getItemsByQuery(@RequestParam("text") String query,
+                                         @Min(0) @RequestParam(defaultValue = "0") int from,
+                                         @Min(0) @RequestParam(defaultValue = "10") int size) {
+        PageRequest page = PageRequest.of(from / size, size);
+        return itemService.getItemsByQuery(query, page);
     }
 
     @PostMapping("/{itemId}/comment")

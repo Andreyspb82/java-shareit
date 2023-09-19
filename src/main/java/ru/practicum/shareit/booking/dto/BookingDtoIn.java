@@ -29,4 +29,7 @@ public class BookingDtoIn {
 
     @Positive
     private Long itemId;
+
+    public BookingDtoIn() {
+    }
 }

@@ -46,12 +46,13 @@ public class Item {
     @Column(name = "is_available")
     private Boolean available;
 
-    @Transient
-    private ItemRequest request;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
 
     @Transient
     private List<CommentDto> comments;
