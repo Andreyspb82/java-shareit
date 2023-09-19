@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -50,9 +51,10 @@ public class ItemServiceImpl implements ItemService {
         Item item = ItemMapper.mapToItem(itemDto, user);
 
         if (itemDto.getRequestId() != null) {
-            Optional<ItemRequest> itemRequest = itemRequestRepository.findById(itemDto.getRequestId());
-            item.setRequest(itemRequest.orElseThrow(() ->
-                    new NotFoundException("Request with Id = " + itemDto.getRequestId() + " does not exist")));
+            ItemRequest itemRequest = itemRequestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() ->
+                            new NotFoundException("Request with Id = " + itemDto.getRequestId() + " does not exist"));
+            item.setRequest(itemRequest);
         }
 
         Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(item);
@@ -109,12 +111,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDtoBooking> getItemsByUserId(long userId, Pageable page) {
         List<Item> items = itemRepository.findByOwnerIdOrderByIdAsc(userId, page);
-        List<ItemDtoBooking> result = new ArrayList<>();
 
-        for (Item item : items) {
-            result.add(getItemWithBookingById(item.getId(), userId));
-        }
-        return result;
+        return items.stream()
+                .map(item -> getItemWithBookingById(item.getId(), userId))
+                .collect(Collectors.toList());
     }
 
     @Override
