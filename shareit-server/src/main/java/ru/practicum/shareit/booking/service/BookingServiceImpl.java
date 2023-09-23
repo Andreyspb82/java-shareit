@@ -117,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
                     .findByBookerIdAndEndBeforeOrderByStartDesc(bookerId, LocalDateTime.now(), page));
         } else if (state.equals(String.valueOf(State.CURRENT))) {
             return BookingMapper.mapToBookingsDtoOut(bookingRepository
-                    .findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(bookerId, LocalDateTime.now(), LocalDateTime.now(), page));
+                    .findByBookerIdAndStartBeforeAndEndAfterOrderById(bookerId, LocalDateTime.now(), LocalDateTime.now(), page));
         } else if (state.equals(String.valueOf(State.WAITING)) || state.equals(String.valueOf(State.REJECTED))) {
             return BookingMapper.mapToBookingsDtoOut(bookingRepository
                     .findByBookerIdAndStatus(bookerId, state, page));

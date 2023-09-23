@@ -12,7 +12,6 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
