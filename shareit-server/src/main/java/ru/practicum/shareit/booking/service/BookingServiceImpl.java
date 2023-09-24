@@ -18,11 +18,8 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 
 @Service
@@ -62,10 +59,6 @@ public class BookingServiceImpl implements BookingService {
                 .status(Status.WAITING)
                 .build();
 
-        Set<ConstraintViolation<Booking>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(booking);
-        if (!violations.isEmpty()) {
-            throw new ValidationException("Booking has not been validated");
-        }
         return BookingMapper.mapToBookingDtoOut(bookingRepository.save(booking));
     }
 

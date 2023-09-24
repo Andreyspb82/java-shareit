@@ -182,23 +182,6 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBookingShouldReturnErrorNotBeenValidated() {
-        bookingDtoInTest.setStart(LocalDateTime.now().minusSeconds(3));
-        bookingDtoInTest.setEnd(LocalDateTime.now().minusSeconds(2));
-
-        when(userService.getUserById(Mockito.anyLong())).thenReturn(userBooker);
-        when(itemService.getItemById(Mockito.anyLong())).thenReturn(itemTest);
-
-        ValidationException ex = assertThrows(ValidationException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                BookingDtoOut bookingDtoReturn = bookingService.createBooking(bookingDtoInTest, userBooker.getId());
-            }
-        });
-        assertEquals("Booking has not been validated", ex.getMessage());
-    }
-
-    @Test
     void updateBookingShouldReturnApproved() {
         when(bookingRepository.existsById(Mockito.anyLong())).thenReturn(true);
         when(bookingRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(bookingTest));

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.practicum.shareit.user.dto.UserRequestDto;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class UserController {
     private final UserClient userClient;
 
     @PostMapping
-    public ResponseEntity<Object> createUser(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<Object> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
         log.info("Creating user {}", userRequestDto);
         return userClient.createUser(userRequestDto);
     }

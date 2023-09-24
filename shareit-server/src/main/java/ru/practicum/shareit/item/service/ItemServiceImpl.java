@@ -56,11 +56,6 @@ public class ItemServiceImpl implements ItemService {
                             new NotFoundException("Request with Id = " + itemDto.getRequestId() + " does not exist"));
             item.setRequest(itemRequest);
         }
-
-        Set<ConstraintViolation<Item>> violations = Validation.buildDefaultValidatorFactory().getValidator().validate(item);
-        if (!violations.isEmpty()) {
-            throw new ValidationException("Item data not validated");
-        }
         return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
 

@@ -128,20 +128,6 @@ class ItemServiceImplTest {
     }
 
     @Test
-    public void createItemShouldReturnErrorItemNotValidated() {
-        itemDtoTest.setDescription("");
-        Item item = ItemMapper.mapToItem(itemDtoTest, userTest);
-
-        ValidationException ex = assertThrows(ValidationException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                ItemDto itemReturn = itemService.createItem(itemDtoTest, 1L);
-            }
-        });
-        assertEquals("Item data not validated", ex.getMessage());
-    }
-
-    @Test
     void updateItem() {
         itemDtoTest.setId(1L);
         itemDtoTest.setName("rename");

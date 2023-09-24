@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 
@@ -19,15 +16,10 @@ public class BookingDtoIn {
 
     private Long id;
 
-    @FutureOrPresent
-    @NotNull
     private LocalDateTime start;
 
-    @FutureOrPresent
-    @NotNull
     private LocalDateTime end;
 
-    @Positive
     private Long itemId;
 
     public BookingDtoIn() {

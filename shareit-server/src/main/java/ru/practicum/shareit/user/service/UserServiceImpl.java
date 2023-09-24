@@ -24,19 +24,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserDto userDto) {
-        Set<ConstraintViolation<User>> violations = Validation
-                .buildDefaultValidatorFactory().getValidator().validate(UserMapper.mapToNewUser(userDto));
-        if (!violations.isEmpty()) {
-            throw new ValidationException("User data not validated");
-        }
         return userRepository.save(UserMapper.mapToNewUser(userDto));
     }
 
     @Override
     public User updateUser(UserDto userDto, long userId) {
         User oldUser = getUserById(userId);
+        User updateUser = UserMapper.mapToUpdateUser(userDto, oldUser);
+
+        Set<ConstraintViolation<User>> violations = Validation
+                .buildDefaultValidatorFactory().getValidator().validate(updateUser);
+        if (!violations.isEmpty()) {
+            throw new ValidationException("User data not validated");
+        }
         log.info("PATCH/users request, user updated");
-        return userRepository.save(UserMapper.mapToUpdateUser(userDto, oldUser));
+        return userRepository.save(updateUser);
     }
 
     @Override

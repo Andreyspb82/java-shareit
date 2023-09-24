@@ -5,9 +5,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemRequestMapper {
 
@@ -19,12 +16,5 @@ public class ItemRequestMapper {
                 .created(itemRequest.getCreated())
                 .items(itemRequest.getItems())
                 .build();
-    }
-
-    public static List<ItemRequestDto> mapToItemRequestsDto(List<ItemRequest> itemRequests) {
-        return itemRequests
-                .stream()
-                .map(ItemRequestMapper::mapToItemRequestDto)
-                .collect(Collectors.toList());
     }
 }

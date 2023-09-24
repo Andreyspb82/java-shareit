@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -51,30 +50,6 @@ class UserServiceImplTest {
         User userReturn = userService.createUser(userDtoTest1);
         assertEquals(userDtoTest1.getName(), userReturn.getName());
         assertEquals(userDtoTest1.getEmail(), userReturn.getEmail());
-    }
-
-    @Test
-    public void shouldReturnErrorInvalidName() {
-        userDtoTest1.setName("");
-        ValidationException ex = assertThrows(ValidationException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userService.createUser(userDtoTest1);
-            }
-        });
-        assertEquals("User data not validated", ex.getMessage());
-    }
-
-    @Test
-    public void shouldReturnErrorInvalidEmail() {
-        userDtoTest1.setEmail("email");
-        ValidationException ex = assertThrows(ValidationException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userService.createUser(userDtoTest1);
-            }
-        });
-        assertEquals("User data not validated", ex.getMessage());
     }
 
     @Test
